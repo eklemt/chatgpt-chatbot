@@ -21,6 +21,13 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// In-memory chat history
+const chatHistory = [];
+const systemPrompt = {
+    role: 'system',
+    content: 'You are ChatGPT, a helpful assistant.',
+};
+
 // API endpoint to handle chat requests
 app.post('/chat', async (req, res) => {
     try {
@@ -29,18 +36,31 @@ app.post('/chat', async (req, res) => {
             return res.status(400).json({ error: 'Message is required' });
         }
 
+        // Add user message to history
+        chatHistory.push({ role: 'user', content: message });
+
         const completion = await openai.chat.completions.create({
-            messages: [{ role: 'user', content: message }],
+            messages: [systemPrompt, ...chatHistory],
             model: 'gpt-3.5-turbo', // Or any other model like gpt-4
         });
 
         const botMessage = completion.choices[0].message.content;
+
+        // Save assistant response to history
+        chatHistory.push({ role: 'assistant', content: botMessage });
+
         res.json({ reply: botMessage });
 
     } catch (error) {
         console.error('Error calling OpenAI API:', error);
         res.status(500).json({ error: 'Failed to communicate with OpenAI' });
     }
+});
+
+// Endpoint to clear the chat history
+app.post('/reset', (req, res) => {
+    chatHistory.length = 0;
+    res.json({ message: 'Chat history cleared' });
 });
 
 app.listen(port, () => {
