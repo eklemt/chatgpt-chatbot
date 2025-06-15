@@ -82,6 +82,21 @@ body {
     transition: background-color 0.3s;
 }
 
+#clearButton {
+    background-color: #e5e5ea;
+    color: #000000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 10px;
+}
+
 #sendButton:hover {
     background-color: #0056b3;
+}
+
+#clearButton:hover {
+    background-color: #d5d5d9;
 }

@@ -16,6 +16,7 @@
     <div class="chat-input">
         <input type="text" id="userInput" placeholder="Type your message...">
         <button id="sendButton">Send</button>
+        <button id="clearButton">Clear</button>
     </div>
 </div>
 
@@ -23,6 +24,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const userInput = document.getElementById('userInput');
         const sendButton = document.getElementById('sendButton');
+        const clearButton = document.getElementById('clearButton');
         const chatMessages = document.getElementById('chatMessages');
 
         const addMessage = (message, sender) => {
@@ -70,6 +72,10 @@
         };
 
         sendButton.addEventListener('click', handleSend);
+        clearButton.addEventListener('click', async () => {
+            await fetch('/reset', { method: 'POST' });
+            chatMessages.innerHTML = '';
+        });
         userInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 handleSend();
