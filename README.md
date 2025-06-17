@@ -24,12 +24,18 @@
    npm start
    ```
 
+The bot replies are generated via the OpenAI **Responses API** using
+`openai.responses.create`.
+
 Initial login
 -------------
 
 The repository includes a default admin user `admin@example.com`. Use the `/login.html`
 page to request a magic link for this email address. The login link will be printed
 to the console if SMTP is not configured.
+
+This application uses the OpenAI **Responses API** to generate replies instead of
+the older Chat Completions API.
 
 Admins can create additional users via the `/admin` page.
 
