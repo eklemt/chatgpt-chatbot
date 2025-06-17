@@ -24,6 +24,12 @@
    npm start
    ```
 
+During development you can use automatic restarts with:
+```bash
+npm run dev
+```
+The file based session store preserves your login across restarts.
+
 The bot replies are generated via the OpenAI **Responses API** using
 `openai.responses.create`.
 
