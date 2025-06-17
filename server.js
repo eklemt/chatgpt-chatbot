@@ -156,12 +156,18 @@ app.post('/chat', requireAuth, async (req, res) => {
         // Add user message to history
         chatHistory.push({ role: 'user', content: message });
 
-        const completion = await openai.chat.completions.create({
-            messages: [systemPrompt, ...chatHistory],
-            model: 'gpt-3.5-turbo', // Or any other model like gpt-4
-        });
+        const params = {
+            input: message,
+            model: 'gpt-4o',
+            instructions: systemPrompt.content,
+        };
+        if (req.session.previousResponseId) {
+            params.previous_response_id = req.session.previousResponseId;
+        }
+        const completion = await openai.responses.create(params);
 
-        const botMessage = completion.choices[0].message.content;
+        const botMessage = completion.output_text;
+        req.session.previousResponseId = completion.id;
 
         // Save assistant response to history
         chatHistory.push({ role: 'assistant', content: botMessage });
@@ -177,6 +183,7 @@ app.post('/chat', requireAuth, async (req, res) => {
 // Endpoint to clear the chat history
 app.post('/reset', requireAuth, (req, res) => {
     chatHistory.length = 0;
+    req.session.previousResponseId = null;
     res.json({ message: 'Chat history cleared' });
 });
 
