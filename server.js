@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 const nodemailer = require('nodemailer');
 const { v4: uuidv4 } = require('uuid');
 const OpenAI = require('openai');
@@ -13,6 +14,9 @@ const port = 3000;
 
 app.use(
     session({
+        store: new FileStore({
+            path: path.join(__dirname, '.sessions'),
+        }),
         secret: process.env.SESSION_SECRET || 'keyboard cat',
         resave: false,
         saveUninitialized: false,
